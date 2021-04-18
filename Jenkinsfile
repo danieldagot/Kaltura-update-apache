@@ -21,7 +21,7 @@ pipeline {
 
             unstash deployment
             sh "ls deployment"
-            # it prints fetched repo AND existing before files 
+            
         }
 
         }
