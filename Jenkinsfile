@@ -9,18 +9,12 @@ pipeline {
          steps{
             sh "mkdir -p deployment;touch deployment/test"
             stash name: "deployment", includes: "deployment/**"
+            
+             checkout([$class: 'GitSCM', branches: [[name: '*/main']],
+                    userRemoteConfigs: [[url: 'https://github.com/danieldagot/Kaltura-update-apache.git']]])
 
-            checkout(
-                    [$class: 'GitSCM', 
-                    branches: [[name: '*/main']], 
-                    doGenerateSubmoduleConfigurations: false, 
-                    extensions: [[$class: 'RelativeTargetDirectory', 
-                    relativeTargetDir: 'deployment']], 
-                    submoduleCfg: [], 
-                    userRemoteConfigs: [[credentialsId: 'secret', url: 'https://github.com/danieldagot/Kaltura-update-apache.git']]]) 
-
-            unstash deployment
-            sh "ls deployment"
+            
+            sh "ls"
             
         }
 
