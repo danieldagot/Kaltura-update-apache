@@ -12,12 +12,13 @@ pipeline {
             
              checkout([$class: 'GitSCM', branches: [[name: '*/main']],
                     userRemoteConfigs: [[url: 'https://github.com/danieldagot/Kaltura-update-apache.git']]])
-
-            
             sh "ls"
             
         }
-
+          stage('lunch ec2 instance') {
+              step{
+                  knife ec2 server create –I ami-456b493a -S /home/ubuntu/jenkins-aws-key.pem –f t2.small -x ubuntu –G sg-5d8b2c17 -s subnet-9d51ddc6 -Z us-east-1a
+              }
         }
     }
 }
