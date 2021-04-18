@@ -14,6 +14,7 @@ pipeline {
                     userRemoteConfigs: [[url: 'https://github.com/danieldagot/Kaltura-update-apache.git']]])
             sh "ls"
             
+         }
         }
           stage('lunch ec2 instance') {
               step{
