@@ -6,8 +6,8 @@ pipeline {
         string(name:'username',description:'')
     }
     environment{
-    AWS_ACCESS_KEY_ID="AKIAYX4FGXDNACL6OWZY"
-    AWS_SECRET_ACCESS_KEY="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"
+    AWS_ACCESS_KEY_ID = "AKIAYX4FGXDNACL6OWZY"
+    AWS_SECRET_ACCESS_KEY = "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"
 }
     stages {
         stage('Update server') {
