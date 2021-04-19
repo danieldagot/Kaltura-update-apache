@@ -6,11 +6,6 @@ pipeline {
         string(name:'username',description:'')
     }
     stages {
-      stage("Env Variables") {
-        environment {
-            AWS_ACCESS_KEY_ID = "AKIAYX4FGXDNACL6OWZY" // overrides pipeline level NAME env variable
-            AWS_SECRET_ACCESS_KEY = "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" // overrides the default BUILD_NUMBER
-        }
         stage('Update server') {
              steps {
                 sh "mv ${env.WORKSPACE}/recipes/default.rb ~/chef-repo/cookbooks/apache/recipes/default.rb" 
@@ -31,5 +26,4 @@ pipeline {
           body: "${env.BUILD_URL} has result ${currentBuild.result}"
     }
   }
-}
 }
