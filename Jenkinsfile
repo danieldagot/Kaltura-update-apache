@@ -8,8 +8,8 @@ pipeline {
     stages {
         stage('Update Ubuntu') {
             steps {
-                sh "knife ec2 server create -I ami-456b493a -S /home/ubuntu/jenkins-aws-key.pem -f t2.small -x ubuntu -G sg-5d8b2c17 -s subnet-9d51ddc6 -Z us-east-1a"
-
+                // sh "knife ec2 server create -I ami-456b493a -S /home/ubuntu/jenkins-aws-key.pem -f t2.small -x ubuntu -G sg-5d8b2c17 -s subnet-9d51ddc6 -Z us-east-1a"
+                sh "knife ec2 server create  --groups=default   --region=us-east-1  --image=ami-895069fd --flavor=t2.small  --ssh-user=ubuntu  --ssh-key=jenkins-aws-key -i=/home/ubuntu/jenkins-aws-key.pem"
             }    
         }
     }
