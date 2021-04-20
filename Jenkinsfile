@@ -21,7 +21,7 @@ pipeline {
         }
         stage('Download Cookbook') {
             steps {
-                git url: 'https://github.com/danieldagot/apache-ciickebook.git'
+                git url: 'https://github.com/danieldagot/apache-ciickebook'
             }
         }
         stage('Install Docker ') {
