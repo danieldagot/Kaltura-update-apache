@@ -1,5 +1,5 @@
 pipeline {
-    agent { label "minion-farm"}
+    agent { label "chef"}
     stages {
         stage('Update Ubuntu') {
             steps {
