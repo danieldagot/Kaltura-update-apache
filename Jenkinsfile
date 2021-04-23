@@ -29,6 +29,7 @@ pipeline {
                         sh "knife ssh 'role:webserver' -x ubuntu -i $AGENT_SSHKEY 'sudo chef-client' -c $CHEFREPO/chef-repo/.chef/config.rb"      
                     }
                 }
+                
             }
         }
             }
