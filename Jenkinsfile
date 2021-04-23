@@ -22,7 +22,7 @@ pipeline {
                    // sh "knife ssh 'role:webserver' -x ubuntu -i -p 'Aa123456' 'sudo chef-client' "
                     sh 'sudo rm -rf $WORKSPACE/Berksfile.lock'
                     // sh 'mv $WORKSPACE/* $CHEFREPO/chef-repo/cookbooks/apache'
-                    
+                    sh "knife ssl fetch"
                     sh "knife cookbook upload apache --force -o $CHEFREPO/chef-repo/cookbooks -c $CHEFREPO/chef-repo/.chef/config.rb"
                     // sh "knife ssh 'role:webserver' -x ubuntu -i -p 'Aa123456' 'sudo chef-client' "
                     withCredentials([sshUserPrivateKey(credentialsId: 'ubuntu', keyFileVariable: 'AGENT_SSHKEY', passphraseVariable: '', usernameVariable: '')]) {
