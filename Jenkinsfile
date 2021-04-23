@@ -11,6 +11,11 @@ pipeline {
                 sh 'sudo apt-get update'
             }    
         }
+           stage('Download Cookbook') {
+            steps {
+                git credentialsId: 'git-creds', url: 'git@github.com:technotrainertm1/apache.git'
+            }
+        }
    stage('Upload Cookbook to Chef Server, Converge Nodes') {
             steps {
                 withCredentials([zip(credentialsId: 'chef-server-cred', variable: 'CHEFREPO')]) {
