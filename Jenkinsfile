@@ -27,7 +27,7 @@ pipeline {
                     sh "knife cookbook upload apache --force -o $CHEFREPO/chef-repo/cookbooks -c $CHEFREPO/chef-repo/.chef/config.rb"
                     // sh "knife ssh 'role:webserver' -x ubuntu -i -p 'Aa123456' 'sudo chef-client' "
                     withCredentials([sshUserPrivateKey(credentialsId: 'ubuntu', keyFileVariable: 'AGENT_SSHKEY', passphraseVariable: '', usernameVariable: '')]) {
-                        sh 'knife exec -c $CHEFREPO/chef-repo/.chef/config.rb -E "nodes.find(:name => \'webserver\') { |node|   node.normal_attrs[:username]=\'test123\' ; node.save; }"'
+                        sh 'knife exec -c $CHEFREPO/chef-repo/.chef/config.rb -E "nodes.find(:name => \'webserver\') { |node|   node.normal_attrs[:username]=\'test1111123\' ; node.save; }"'
                         sh "knife ssh 'name:webserver' -x ubuntu -i $AGENT_SSHKEY 'sudo chef-client' -c $CHEFREPO/chef-repo/.chef/config.rb"      
                     }
                 }
