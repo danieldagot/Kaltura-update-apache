@@ -8,11 +8,10 @@ pipeline {
     stages {
         stage('Update server') {
              steps {
-                 sh "knife ssh 'role:webserver' -x ubuntu -i $AGENT_SSHKEY 'sudo chef-client' "
                // sh "mv ${env.WORKSPACE}/recipes/default.rb ~/chef-repo/cookbooks/apache/recipes/default.rb" 
-               // sh "cd  ~/chef-repo"
-            //    sh 'cd  ~/chef-repo ; knife exec -E "nodes.find(:name => \'webserver\') { |node|   node.normal_attrs[:username]=\'test123\' ; node.save; }"'
-              //  sh "knife upload /cookbooks  --force "
+              //  sh 'knife exec -E "nodes.find(:name => webserver\') { |node|   node.normal_attrs[:username]=\'test\' ; node.save; }"'
+               // sh "knife upload /cookbooks  --force "
+                 sh "knife ssh 'role:webserver' -x ubuntu -i -p 'Aa123456' 'sudo chef-client' "
             }
         }
             }
