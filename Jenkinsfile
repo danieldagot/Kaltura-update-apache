@@ -9,7 +9,7 @@ pipeline {
         stage('Update server') {
              steps {
                     withCredentials([sshUserPrivateKey(credentialsId: 'master1', keyFileVariable: 'AGENT_SSHKEY', passphraseVariable: '', usernameVariable: '')]) {
-                        sh "knife ssh 'role:webserver' -x ubuntu -i $AGENT_SSHKEY 'sudo chef-client' -c $CHEFREPO/chef-repo/.chef/knife.rb"     
+                 
                         sh 'cd  ~/chef-repo ; knife exec -E "nodes.find(:name => \'webserver\') { |node|   node.normal_attrs[:username]=\'test123\' ; node.save; }"'
                     }
                // sh "mv ${env.WORKSPACE}/recipes/default.rb ~/chef-repo/cookbooks/apache/recipes/default.rb" 
