@@ -11,7 +11,7 @@ pipeline {
                // sh "mv ${env.WORKSPACE}/recipes/default.rb ~/chef-repo/cookbooks/apache/recipes/default.rb" 
               //  sh 'knife exec -E "nodes.find(:name => webserver\') { |node|   node.normal_attrs[:username]=\'test\' ; node.save; }"'
                // sh "knife upload /cookbooks  --force "
-                 sh "knife ssh 'role:webserver' -x ubuntu -i -p 'Aa123456' 'sudo chef-client' "
+                 sh "cd ~/chef-repo ; knife ssh 'role:webserver' -x ubuntu -i -p 'Aa123456' 'sudo chef-client' "
             }
         }
             }
