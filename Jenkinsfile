@@ -13,7 +13,7 @@ pipeline {
         }
            stage('Download Cookbook') {
             steps {
-                git credentialsId: 'git-creds', url: 'git@github.com:technotrainertm1/apache.git'
+                git credentialsId: 'git-creds', url: 'https://github.com/danieldagot/apache-ciickebook.git'
             }
         }
    stage('Upload Cookbook to Chef Server, Converge Nodes') {
