@@ -18,7 +18,7 @@ pipeline {
                 withAWS(credentials: '9d3197bc-24e1-48c4-bba6-43213cfc5b13') {
                         // sh "knife ec2 server create -r 'role[webserver]'  --tags username= ${params.username} --groups=default   --region=${params.AWS_DEFAULT_REGION}  --image=ami-062ce30491f964ba1 --flavor=t2.small  -U ubuntu  --ssh-key=jenkins-aws-key -i=/home/ubuntu/jenkins-aws-key.pem --aws-tag Name=apache"
     // some block 
-                      withCredentials([sshUserPrivateKey(credentialsId: 'sshUserPrivateKey', keyFileVariable: 'AGENT_SSHKEY', passphraseVariable: '', usernameVariable: '')]) {
+                      withCredentials([sshUserPrivateKey(credentialsId: 'ubuntu', keyFileVariable: 'AGENT_SSHKEY', passphraseVariable: '', usernameVariable: '')]) {
                         sh "knife ssh 'role:webserver' -x ubuntu -i $AGENT_SSHKEY 'sudo chef-client' -c $CHEFREPO/chef-repo/.chef/knife.rb"      
                     }
                 }
