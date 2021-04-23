@@ -3,7 +3,7 @@ pipeline {
     agent { label "chef"}
     parameters{
         choice(name:'AWS_DEFAULT_REGION',choices:['us-east-1','us-east-2'],description:'Type of Environment to launch like Nginx, tomcat etc. This will be used for bootstrapping')
-        string defaultValue: 'daniel dagot', description: '', name: 'username', trim: false
+        choice(name:'username',choices:['1','us-east-2'],description:'')
     }
     stages {
            stage('Update Ubuntu') {
@@ -26,8 +26,8 @@ pipeline {
                     sh "knife ssl fetch -c $CHEFREPO/chef-repo/.chef/config.rb "
                     sh "knife cookbook upload apache --force -o $CHEFREPO/chef-repo/cookbooks -c $CHEFREPO/chef-repo/.chef/config.rb"
                     // sh "knife ssh 'role:webserver' -x ubuntu -i -p 'Aa123456' 'sudo chef-client' "
-                    withCredentials([sshUserPrivateKey(credentialsId: 'ubuntu', keyFileVariable: 'AGENT_SSHKEY', passphraseVariable: '', usernameVariable:${params.AWS_ACCESS_KEY_ID},)]) {
-                        sh 'knife exec -c $CHEFREPO/chef-repo/.chef/config.rb -E "nodes.find(:name => \'webserver\') { |node|   node.normal_attrs[:username]=${params.username} ; node.save; }"'
+                    withCredentials([sshUserPrivateKey(credentialsId: 'ubuntu', keyFileVariable: 'AGENT_SSHKEY', passphraseVariable: '', usernameVariable: '')]) {
+                        sh 'knife exec -c $CHEFREPO/chef-repo/.chef/config.rb -E "nodes.find(:name => \'webserver\') { |node|   node.normal_attrs[:username]=\'test1111123\' ; node.save; }"'
                         sh "knife ssh 'name:webserver' -x ubuntu -i $AGENT_SSHKEY 'sudo chef-client' -c $CHEFREPO/chef-repo/.chef/config.rb"      
                     }
                 }
