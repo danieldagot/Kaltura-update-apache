@@ -9,7 +9,7 @@ pipeline {
         stage('Update server') {
              steps {
                 sh "mv ${env.WORKSPACE}/recipes/default.rb ~/chef-repo/cookbooks/apache/recipes/default.rb" 
-                sh "knife exec -E "nodes.find(:name => 'webserver') { |node|   node.normal_attrs[:username]='test' ; node.save; } " " 
+                sh "knife exec -E "nodes.find(:name => 'webserver') { |node|   node.normal_attrs[:username]='test2' ; node.save; } " " 
                 sh "knife upload /cookbooks  --force "
             }
         }
