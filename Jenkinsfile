@@ -6,12 +6,17 @@ pipeline {
         string(name:'username',description:'')
     }
     stages {
-        stage('Update server') {
-             steps {
-               // sh "mv ${env.WORKSPACE}/recipes/default.rb ~/chef-repo/cookbooks/apache/recipes/default.rb" 
-              //  sh 'knife exec -E "nodes.find(:name => webserver\') { |node|   node.normal_attrs[:username]=\'test\' ; node.save; }"'
-               // sh "knife upload /cookbooks  --force "
-                 sh "cd ~/chef-repo ; knife ssh 'role:webserver' -x ubuntu -i -p 'Aa123456' 'sudo chef-client' "
+   stage('Upload Cookbook to Chef Server, Converge Nodes') {
+            steps {
+                withCredentials([zip(credentialsId: 'ubuntu', variable: 'CHEFREPO')]) {
+                    sh 'mkdir -p $CHEFREPO/chef-repo/cookbooks/apache'
+                    sh 'sudo rm -rf $WORKSPACE/Berksfile.lock'
+                    sh 'mv $WORKSPACE/* $CHEFREPO/chef-repo/cookbooks/apache'
+                    sh "knife cookbook upload apache --force -o $CHEFREPO/chef-repo/cookbooks -c $CHEFREPO/chef-repo/.chef/knife.rb"
+                    withCredentials([sshUserPrivateKey(credentialsId: 'ubuntu', keyFileVariable: 'AGENT_SSHKEY', passphraseVariable: '', usernameVariable: '')]) {
+                        sh "knife ssh 'role:webserver' -x ubuntu -i $AGENT_SSHKEY 'sudo chef-client' -c $CHEFREPO/chef-repo/.chef/knife.rb"      
+                    }
+                }
             }
         }
             }
