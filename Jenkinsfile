@@ -3,9 +3,14 @@ pipeline {
     agent { label "chef"}
     parameters{
         choice(name:'AWS_DEFAULT_REGION',choices:['us-east-1','us-east-2'],description:'Type of Environment to launch like Nginx, tomcat etc. This will be used for bootstrapping')
-        string(name:'username',description:'')
+        string(name:'username',choices:['1','us-east-2'],description:'')
     }
     stages {
+           stage('Update Ubuntu') {
+            steps {
+                sh 'sudo apt-get update'
+            }    
+        }
    stage('Upload Cookbook to Chef Server, Converge Nodes') {
             steps {
                 withCredentials([zip(credentialsId: 'ubuntu', variable: 'CHEFREPO')]) {
