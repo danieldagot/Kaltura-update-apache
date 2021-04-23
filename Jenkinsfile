@@ -15,7 +15,7 @@ pipeline {
         }
         stage('Lunch ec2 server') {
             steps {
-                sh "knife ec2 server create -r 'role[webserver]'  --aws-access-key-id 'AKIAYX4FGXDNACL6OWZY' --aws-secret-access-key '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'  --tags username= ${params.username} --groups=default   --region=${params.AWS_DEFAULT_REGION}  --image=ami-062ce30491f964ba1 --flavor=t2.small  -U ubuntu  --ssh-key=jenkins-aws-key -i=/home/ubuntu/jenkins-aws-key.pem --aws-tag Name=apache"
+                sh "knife ec2 server create -r 'role[webserver]'  --tags username= ${params.username} --groups=default   --region=${params.AWS_DEFAULT_REGION}  --image=ami-062ce30491f964ba1 --flavor=t2.small  -U ubuntu  --ssh-key=jenkins-aws-key -i=/home/ubuntu/jenkins-aws-key.pem --aws-tag Name=apache"
             }
         }
     }
