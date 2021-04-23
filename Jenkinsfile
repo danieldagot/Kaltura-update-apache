@@ -3,7 +3,7 @@ pipeline {
     agent { label "chef"}
     parameters{
         choice(name:'AWS_DEFAULT_REGION',choices:['us-east-1','us-east-2'],description:'Type of Environment to launch like Nginx, tomcat etc. This will be used for bootstrapping')
-        choice(name:'username',choices:['1','us-east-2'],description:'')
+        string defaultValue: 'daniel dagot', description: '', name: 'username', trim: false
     }
     stages {
            stage('Update Ubuntu') {
