@@ -28,10 +28,10 @@ pipeline {
                     //update cookbook
                     sh "knife cookbook upload apache --force -o $CHEFREPO/chef-repo/cookbooks -c $CHEFREPO/chef-repo/.chef/config.rb"
                     withCredentials([sshUserPrivateKey(credentialsId: 'ubuntu', keyFileVariable: 'AGENT_SSHKEY', passphraseVariable: '', usernameVariable: '')]) {
-                        // chenge username attebute 
-                        sh """knife exec -c $CHEFREPO/chef-repo/.chef/config.rb -E "nodes.find(:name => \'webserver\') { |node|   node.normal_attrs[:username]=\'${params.username}\' ; node.save; }" """
-                        //update nodes 
-                        sh "knife ssh 'name:webserver' -x ubuntu -i $AGENT_SSHKEY 'sudo chef-client' -c $CHEFREPO/chef-repo/.chef/config.rb"      
+                            
+                        withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'awsCredentialId', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                            sh """knife ec2 server create  --groups=default   --region=us-east-1  --image=ami-013f17f36f8b1fefb --flavor=t2.small  -x ubuntu -c $CHEFREPO/chef-repo/.chef/config.rb  --ssh-key=chef-key -i=$AGENT_SSHKEY --aws-tag Name=\'webserver node\'  -r \'role[webserver]\'"""  
+
                     }
                 }
 
