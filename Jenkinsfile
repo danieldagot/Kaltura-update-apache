@@ -34,7 +34,7 @@ pipeline {
                              def res =   sh(script: "knife search node -c $CHEFREPO/chef-repo/.chef/config.rb tags:us-east-1", returnStatus: true)
                                echo "test"
                         
-                                if (res == 0 ) {
+                                if (res != 0 ) {
                                     echo res
                                 }
                                else {
