@@ -37,10 +37,9 @@ pipeline {
                     //update cookbook
                     sh "knife cookbook upload apache --force -o $CHEFREPO/chef-repo/cookbooks -c $CHEFREPO/chef-repo/.chef/config.rb"
                     withCredentials([sshUserPrivateKey(credentialsId: 'ubuntu', keyFileVariable: 'AGENT_SSHKEY', passphraseVariable: '', usernameVariable: '')]) {
-                        
                         withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'awsCredentialId', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                         script{
-                                def count = sh "knife count -c $CHEFREPO/chef-repo/.chef/config.rb tags:us-east-1" 
+                                def count = sh returnStdout: true, script:"knife count -c $CHEFREPO/chef-repo/.chef/config.rb tags:us-east-1" 
                                 echo count 
                                 if(count == "0")
                                 {
