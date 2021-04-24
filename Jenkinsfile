@@ -34,7 +34,7 @@ pipeline {
 
                                echo "test"
                                
-                               if(env.instaseCount == 0){
+                               if(env.instaseCount){
                                    echo "test is good"
                                    //create and boostrap new ec2 instacse 
                                }
