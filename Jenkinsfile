@@ -37,7 +37,7 @@ pipeline {
                                echo "test"
                                def script_output = sh(returnStdout: true, script: """
          #!/bin/bash
-        set -e
+        set +e
         set +x
         knife search node -c $CHEFREPO/chef-repo/.chef/config.rb tags:us-east-1
     """)
