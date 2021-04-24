@@ -18,17 +18,16 @@ pipeline {
    stage('Upload Cookbook to Chef Server, Converge Nodes') {
             steps {
                 withCredentials([zip(credentialsId: 'chef-server-cred', variable: 'CHEFREPO')]) {
-                    sh 'mkdir -p $CHEFREPO/chef-repo/cookbooks/apache'
-                    sh 'sudo rm -rf $WORKSPACE/Berksfile.lock'
-                    sh 'mv $WORKSPACE/* $CHEFREPO/chef-repo/cookbooks/apache'
-                    // add trusted certs to remote repo 
-                    sh"cp -r ~/chef-repo/.chef/trusted_certs $CHEFREPO/chef-repo/"
-                     sh"cp -r ~/chef-repo/.chef/syntaxcache $CHEFREPO/chef-repo/"
-                    sh "knife ssl fetch -c $CHEFREPO/chef-repo/.chef/config.rb "
+                    // sh 'mkdir -p $CHEFREPO/chef-repo/cookbooks/apache'
+                    // sh 'sudo rm -rf $WORKSPACE/Berksfile.lock'
+                    // sh 'mv $WORKSPACE/* $CHEFREPO/chef-repo/cookbooks/apache'
+                    // // add trusted certs to remote repo 
+                    // sh"cp -r ~/chef-repo/.chef/trusted_certs $CHEFREPO/chef-repo/"
+                    //  sh"cp -r ~/chef-repo/.chef/syntaxcache $CHEFREPO/chef-repo/"
+                    // sh "knife ssl fetch -c $CHEFREPO/chef-repo/.chef/config.rb "
                     //update cookbook
                //     sh "knife cookbook upload apache --force -o $CHEFREPO/chef-repo/cookbooks -c $CHEFREPO/chef-repo/.chef/config.rb"
                     withCredentials([sshUserPrivateKey(credentialsId: 'ubuntu', keyFileVariable: 'AGENT_SSHKEY', passphraseVariable: '', usernameVariable: '')]) {
-                        
                         withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'awsCredentialId', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                              script{
                             set +e
