@@ -32,6 +32,7 @@ pipeline {
                         withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'awsCredentialId', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                            script{
                              def res =   sh(script: "knife search node -c $CHEFREPO/chef-repo/.chef/config.rb tags:us-east-1", returnStatus: true)
+                             def errors = ''
                                echo "test"
                                 println("cmd: $it res $res")
                                 if (res !=0 ) {
