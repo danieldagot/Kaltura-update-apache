@@ -39,7 +39,15 @@ pipeline {
                     withCredentials([sshUserPrivateKey(credentialsId: 'ubuntu', keyFileVariable: 'AGENT_SSHKEY', passphraseVariable: '', usernameVariable: '')]) {
                         
                         withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'awsCredentialId', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                           sh "knife count -c $CHEFREPO/chef-repo/.chef/config.rb tags:us-east-1"
+                        script{
+                                def count = sh "knife count -c $CHEFREPO/chef-repo/.chef/config.rb tags:us-east-1" 
+                                echo count 
+                                if(count == "0")
+                                {
+                                    echo "ok"
+                                }
+                        }
+                           
                     }
                 }
 
