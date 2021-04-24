@@ -45,7 +45,7 @@ pipeline {
                                 {
                                     echo "ok"
                                 }
-                                  if(count == "0")
+                                  if(count == '0')
                                 {
                                     echo "ok2"
                                 }
