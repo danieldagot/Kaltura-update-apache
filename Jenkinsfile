@@ -33,12 +33,13 @@ pipeline {
                            script{
                              def res =   sh(script: "knife search node -c $CHEFREPO/chef-repo/.chef/config.rb tags:us-east-1", returnStatus: true)
                                echo "test"
-                        
-                                if (res != 0 ) {
-                                    echo res
+                                println("cmd: $it res $res")
+                                if (res !=0 ) {
+                                    errors = "$it"
+                                    echo errors 
                                 }
                                else {
-                                 //  echo env.instaseCount
+                                 echo "no exit code"
                                }
                             
                            } 
