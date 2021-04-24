@@ -34,7 +34,7 @@ pipeline {
 
                                echo "test"
                                echo instaseCount
-                               if(instaseCount == 0){
+                               if(instaseCount == "0"){
                                    echo "test is good"
                                    //create and boostrap new ec2 instacse 
                                }
