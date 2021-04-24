@@ -39,7 +39,7 @@ pipeline {
          #!/bin/bash
         set -e
         set +x
-        knife search node -c $CHEFREPO/chef-repo/.chef/config.rb tags:us-east-1;echo$?
+        knife search node -c $CHEFREPO/chef-repo/.chef/config.rb tags:us-east-1
     """)
     script_output = script_output.trim()
     VAR_NAME = script_output
