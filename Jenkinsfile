@@ -22,11 +22,15 @@ pipeline {
                     sh 'mkdir -p $CHEFREPO/chef-repo/cookbooks/apache'
                     sh 'sudo rm -rf $WORKSPACE/Berksfile.lock'
                     sh 'mv $WORKSPACE/* $CHEFREPO/chef-repo/cookbooks/apache'
+                    // add trusted certs to remote repo 
                     sh"cp -r ~/chef-repo/.chef/trusted_certs $CHEFREPO/chef-repo/"
                     sh "knife ssl fetch -c $CHEFREPO/chef-repo/.chef/config.rb "
+                    //update cookbook
                     sh "knife cookbook upload apache --force -o $CHEFREPO/chef-repo/cookbooks -c $CHEFREPO/chef-repo/.chef/config.rb"
                     withCredentials([sshUserPrivateKey(credentialsId: 'ubuntu', keyFileVariable: 'AGENT_SSHKEY', passphraseVariable: '', usernameVariable: '')]) {
+                        // chenge username attebute 
                         sh """knife exec -c $CHEFREPO/chef-repo/.chef/config.rb -E "nodes.find(:name => \'webserver\') { |node|   node.normal_attrs[:username]=\'${params.username}\' ; node.save; }" """
+                        //update nodes 
                         sh "knife ssh 'name:webserver' -x ubuntu -i $AGENT_SSHKEY 'sudo chef-client' -c $CHEFREPO/chef-repo/.chef/config.rb"      
                     }
                 }
