@@ -15,49 +15,52 @@ pipeline {
             steps {
                     git branch: 'main', credentialsId: 'git-creds', url: 'https://github.com/danieldagot/apache-ciickebook.git'            }
         }
-   stage('Upload Cookbook to Chef Server, Converge Nodes') {
+          stage('Install Ruby and Test Kitchen') {
             steps {
-             
-                withCredentials([zip(credentialsId: 'chef-server-cred', variable: 'CHEFREPO')]) {
-                    sh 'mkdir -p $CHEFREPO/chef-repo/cookbooks/apache'
-                    sh 'sudo rm -rf $WORKSPACE/Berksfile.lock'
-                    sh 'mv $WORKSPACE/* $CHEFREPO/chef-repo/cookbooks/apache'
-                    // add trusted certs to remote repo 
-                    sh"cp -r ~/chef-repo/.chef/trusted_certs $CHEFREPO/chef-repo/"
-                     sh"cp -r ~/chef-repo/.chef/syntaxcache $CHEFREPO/chef-repo/"
-                    sh "knife ssl fetch -c $CHEFREPO/chef-repo/.chef/config.rb "
-                    //update cookbook
-                    sh "knife cookbook upload apache --force -o $CHEFREPO/chef-repo/cookbooks -c $CHEFREPO/chef-repo/.chef/config.rb"
-                    withCredentials([sshUserPrivateKey(credentialsId: 'ubuntu', keyFileVariable: 'AGENT_SSHKEY', passphraseVariable: '', usernameVariable: '')]) {
-                        
-                        withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'awsCredentialId', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                            script {
-   GIT_COMMIT_EMAIL = sh (
-        script: 'knife search node -c $CHEFREPO/chef-repo/.chef/config.rb tags:us-east-1  --format=\'%ae\'',
-        returnStdout: true
-    ).trim()
-    echo "Git committer email: ${GIT_COMMIT_EMAIL}"
-}
-                        //    script{
-                               
-                        //       def instaseCount  =    sh " "
-                              
-                        //        echo  instaseCount
-                        //     //    if(env.instaseCount == "0"){
-                        //     //        echo "test is good"
-                        //     //        //create and boostrap new ec2 instacse 
-                        //     //    }
-                        //     //    else {
-                        //     //      //  echo env.instaseCount
-                        //     //    }
-                            
-                        //    } 
-
-                    }
-                }
-
+                sh 'sudo apt-get install -y rubygems ruby-dev'
+                sh 'chef gem install kitchen-docker'
+                sh 'chef gem install knife-count'
+                sh 'knife count tags:us-east-1'
             }
         }
-   }
+//    stage('Upload Cookbook to Chef Server, Converge Nodes') {
+//             steps {
+             
+//                 withCredentials([zip(credentialsId: 'chef-server-cred', variable: 'CHEFREPO')]) {
+//                     sh 'mkdir -p $CHEFREPO/chef-repo/cookbooks/apache'
+//                     sh 'sudo rm -rf $WORKSPACE/Berksfile.lock'
+//                     sh 'mv $WORKSPACE/* $CHEFREPO/chef-repo/cookbooks/apache'
+//                     // add trusted certs to remote repo 
+//                     sh"cp -r ~/chef-repo/.chef/trusted_certs $CHEFREPO/chef-repo/"
+//                      sh"cp -r ~/chef-repo/.chef/syntaxcache $CHEFREPO/chef-repo/"
+//                     sh "knife ssl fetch -c $CHEFREPO/chef-repo/.chef/config.rb "
+//                     //update cookbook
+//                     sh "knife cookbook upload apache --force -o $CHEFREPO/chef-repo/cookbooks -c $CHEFREPO/chef-repo/.chef/config.rb"
+//                     withCredentials([sshUserPrivateKey(credentialsId: 'ubuntu', keyFileVariable: 'AGENT_SSHKEY', passphraseVariable: '', usernameVariable: '')]) {
+                        
+//                         withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'awsCredentialId', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+//                             script {
+
+//                         //    script{
+                               
+//                         //       def instaseCount  =    sh " "
+                              
+//                         //        echo  instaseCount
+//                         //     //    if(env.instaseCount == "0"){
+//                         //     //        echo "test is good"
+//                         //     //        //create and boostrap new ec2 instacse 
+//                         //     //    }
+//                         //     //    else {
+//                         //     //      //  echo env.instaseCount
+//                         //     //    }
+                            
+//                         //    } 
+
+//                     }
+//                 }
+
+//             }
+//         }
+//    }
             }
         }
