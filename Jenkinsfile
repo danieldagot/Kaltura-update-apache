@@ -35,7 +35,16 @@ pipeline {
                             
                               env.instaseCount  =    sh(script: "knife search node -c $CHEFREPO/chef-repo/.chef/config.rb tags:us-east-1 || true", returnStdout: true)
                                echo "test"
-                               echo env.instaseCount[0] 
+                               def script_output = sh(returnStdout: true, script: """
+         #!/bin/bash
+        set -e
+        set +x
+        echo knife search node -c $CHEFREPO/chef-repo/.chef/config.rb tags:us-east-1
+    """)
+    script_output = script_output.trim()
+    VAR_NAME = script_output
+    echo VAR_NAME
+                            
                             //    if(env.instaseCount == "0"){
                             //        echo "test is good"
                             //        //create and boostrap new ec2 instacse 
