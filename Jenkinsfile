@@ -30,7 +30,7 @@ pipeline {
                     withCredentials([sshUserPrivateKey(credentialsId: 'ubuntu', keyFileVariable: 'AGENT_SSHKEY', passphraseVariable: '', usernameVariable: '')]) {
                             
                         withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'awsCredentialId', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                            sh """knife ec2 server create  --groups=default   --region=us-east-1  --image=ami-013f17f36f8b1fefb --flavor=t2.small  -x ubuntu -c $CHEFREPO/chef-repo/.chef/config.rb  --ssh-key=chef-key -i=$AGENT_SSHKEY --aws-tag Name=\'webserver node\'  -r \'role[webserver]\'"""  
+                            sh """knife ec2 server create --aws-access-key-id=$AWS_ACCESS_KEY_ID --aws-secret-access-key=$AWS_SECRET_ACCESS_KEY --groups=default   --region=us-east-1  --image=ami-013f17f36f8b1fefb --flavor=t2.small  -x ubuntu -c $CHEFREPO/chef-repo/.chef/config.rb  --ssh-key=chef-key -i=$AGENT_SSHKEY --aws-tag Name=\'webserver node\'  -r \'role[webserver]\'"""  
 
                     }
                 }
