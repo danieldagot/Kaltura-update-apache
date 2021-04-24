@@ -30,7 +30,7 @@ pipeline {
                         
                         withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'awsCredentialId', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                            script{
-                               def instaseCount= sh "knife exec -E "exit nodes.find('tags:$AWS_DEFAULT_REGION').count";echo `$?"
+                               def instaseCount= sh 'knife exec -E "exit nodes.find(\'tags:us-east-1\').count";echo $? '
                                if(instaseCount == 0){
                                    echo "test is good"
                                }
