@@ -33,10 +33,13 @@ pipeline {
                               env.instaseCount  =    sh(script: 'knife exec -c $CHEFREPO/chef-repo/.chef/config.rb -E "exit nodes.find(\'tags:us-east-1\').count";echo $? ', returnStdout: true)
 
                                echo "test"
-                               echo instaseCount
-                               if("${env.instaseCount}" === "0"){
+                               
+                               if(env.instaseCount == "0"){
                                    echo "test is good"
                                    //create and boostrap new ec2 instacse 
+                               }
+                               else {
+                                   echo env.instaseCount
                                }
                             
                            } 
