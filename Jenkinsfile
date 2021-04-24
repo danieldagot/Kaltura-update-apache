@@ -41,11 +41,11 @@ pipeline {
                         script{
                                  def count = sh returnStdout: true, script:"knife count -c $CHEFREPO/chef-repo/.chef/config.rb tags:us-east-1".trim()
                                 echo count 
-                                if(count == 0)
+                                if("$count" == 0)
                                 {
                                     echo "ok"
                                 }
-                                  if(count == '0')
+                                  if("$count" == '0')
                                 {
                                     echo "ok2"
                                 }
