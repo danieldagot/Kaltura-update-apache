@@ -40,7 +40,7 @@ pipeline {
                                    //create and boostrap new ec2 instacse 
                                }
                                else {
-                                echo "test is not good"
+                                echo instaseCount
                                }
                             
                            } 
