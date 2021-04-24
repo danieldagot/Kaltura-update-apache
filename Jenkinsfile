@@ -36,7 +36,7 @@ pipeline {
                               def instaseCount  =    sh returnStdout: true, script: 'knife exec -E "exit nodes.find(\'tags:us-east-1\').count" | echo $?'
                               
                                echo  instaseCount
-                               if(instaseCount == "0"){
+                               if($instaseCount == "0"){
                                    echo "test is good"
                                    //create and boostrap new ec2 instacse 
                                }
