@@ -34,10 +34,10 @@ pipeline {
                              def res =   sh(script: "knife search node -c $CHEFREPO/chef-repo/.chef/config.rb tags:us-east-1", returnStatus: true)
                              def errors = ''
                                echo "test"
-                                println("cmd: $it res $res")
+                                println("$res")
                                 if (res !=0 ) {
-                                    errors = "$it"
-                                    echo errors 
+                                   
+                                
                                 }
                                else {
                                  echo "no exit code"
