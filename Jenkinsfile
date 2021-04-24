@@ -31,17 +31,17 @@ pipeline {
                         
                         withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'awsCredentialId', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                            script{
-                             def res =   sh(script: "knife search node -c $CHEFREPO/chef-repo/.chef/config.rb tags:us-east-1", returnStatus: true)
-                             def errors = ''
+                              env.instaseCount  =    sh(script: "knife search node -c $CHEFREPO/chef-repo/.chef/config.rb tags:us-east-1", returnStdout: true)
+                              set +e
                                echo "test"
-                                println("$res")
-                                if (res !=0 ) {
-                                   
-                                
-                                }
-                               else {
-                                 echo "no exit code"
-                               }
+                               echo env.instaseCount
+                            //    if(env.instaseCount == "0"){
+                            //        echo "test is good"
+                            //        //create and boostrap new ec2 instacse 
+                            //    }
+                            //    else {
+                            //      //  echo env.instaseCount
+                            //    }
                             
                            } 
 
