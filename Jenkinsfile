@@ -34,8 +34,9 @@ pipeline {
                            script{
                                try {
                               env.instaseCount  =    sh(script: "knife search node -c $CHEFREPO/chef-repo/.chef/config.rb tags:us-east-1", returnStdout: true)
-                               }catch (err) {
-                                   echo err.getMessage()
+                               }catch (Exception e) {
+                                   echo e
+                                   
                                }
                                echo  env.instaseCount
                             //    if(env.instaseCount == "0"){
