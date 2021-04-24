@@ -4,7 +4,6 @@ pipeline {
     parameters{
         choice(name:'AWS_DEFAULT_REGION',choices:['us-east-1','us-east-2'],description:'Type of Environment to launch like Nginx, tomcat etc. This will be used for bootstrapping')
         string defaultValue: 'daniel-dagot', description: '', name: 'username', trim: true
-        
     }
     stages {
            stage('Update Ubuntu') {
@@ -28,9 +27,14 @@ pipeline {
                     //update cookbook
                     sh "knife cookbook upload apache --force -o $CHEFREPO/chef-repo/cookbooks -c $CHEFREPO/chef-repo/.chef/config.rb"
                     withCredentials([sshUserPrivateKey(credentialsId: 'ubuntu', keyFileVariable: 'AGENT_SSHKEY', passphraseVariable: '', usernameVariable: '')]) {
-                            
+                        
                         withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'awsCredentialId', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                            sh """knife ec2 server create --aws-access-key-id=$AWS_ACCESS_KEY_ID --aws-secret-access-key=$AWS_SECRET_ACCESS_KEY --groups=default   --region=us-east-1  --image=ami-013f17f36f8b1fefb --flavor=t2.small  -x ubuntu -c $CHEFREPO/chef-repo/.chef/config.rb  --ssh-key=chef-key -i=$AGENT_SSHKEY --aws-tag Name=\'webserver node\'  -r \'role[webserver]\'"""  
+                           script{
+                               def instaseCount= sh """ knife exec -E "exit nodes.find('tags:$AWS_DEFAULT_REGION').count";echo $?"""
+                               if(instaseCount == 0){
+                                   echo "test is good"
+                               }
+                           } 
 
                     }
                 }
