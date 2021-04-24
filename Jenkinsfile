@@ -32,6 +32,7 @@ pipeline {
                         
                         withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'awsCredentialId', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                            script{
+                               sh"set +e"
                               env.instaseCount  =    sh(script: "knife search node -c $CHEFREPO/chef-repo/.chef/config.rb tags:us-east-1 || true", returnStdout: true)
                                echo "test"
                                echo env.instaseCount 
