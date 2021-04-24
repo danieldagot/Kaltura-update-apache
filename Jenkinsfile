@@ -32,17 +32,16 @@ pipeline {
                         
                         withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'awsCredentialId', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                            script{
-                              env.instaseCount  =    sh(script: "knife search node -c $CHEFREPO/chef-repo/.chef/config.rb tags:us-east-1", returnStdout: true)
-                              set +e
+                              env.instaseCount  =    sh(script: "knife search node -c $CHEFREPO/chef-repo/.chef/config.rb tags:us-east-1 || true", returnStdout: true)
                                echo "test"
-                               rv
-                               if(env.instaseCount == "0"){
-                                   echo "test is good"
-                                   //create and boostrap new ec2 instacse 
-                               }
-                               else {
-                                 //  echo env.instaseCount
-                               }
+                               echo env.instaseCount 
+                            //    if(env.instaseCount == "0"){
+                            //        echo "test is good"
+                            //        //create and boostrap new ec2 instacse 
+                            //    }
+                            //    else {
+                            //      //  echo env.instaseCount
+                            //    }
                             
                            } 
 
