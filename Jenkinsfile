@@ -45,7 +45,7 @@ pipeline {
                                   if("$env.countInstenses" == '0')
                                 {
                                     echo "ok 0 "
-                                    sh " knife ec2 server create  --groups=default   --aws-secret-access-key=$AWS_SECRET_ACCESS_KEY --aws-access-key-id=$AWS_ACCESS_KEY_ID --region=us-east-1  --image=ami-013f17f36f8b1fefb --flavor=t2.small  -x ubuntu  --ssh-key=daniel-aws-keys -i=$AGENT_SSHKEY --aws-tag Name='webserver node'  -r 'role[webserver]' "
+                                    sh " knife ec2 server create c $CHEFREPO/chef-repo/.chef/config.rb --groups=default   --aws-secret-access-key=$AWS_SECRET_ACCESS_KEY --aws-access-key-id=$AWS_ACCESS_KEY_ID --region=us-east-1  --image=ami-013f17f36f8b1fefb --flavor=t2.small  -x ubuntu  --ssh-key=daniel-aws-keys -i=$AGENT_SSHKEY --aws-tag Name='webserver node'  -r 'role[webserver]' "
                                 }
                                  
                         }
