@@ -44,7 +44,7 @@ pipeline {
                 if("$env.countInstenses" == '0')
                 {
                   echo "ok 0 "
-                   sh " knife ec2 server create -c $CHEFREPO/chef-repo/.chef/config.rb --groups=default   --aws-secret-access-key=$AWS_SECRET_ACCESS_KEY --aws-access-key-id=$AWS_ACCESS_KEY_ID --region=us-east-1   --identity-file $AGENT_SSHKEY --image=ami-013f17f36f8b1fefb --flavor=t2.micro -N zxczxczxc --ssh-user ubuntu  --ssh-key jenkins-aws-key --aws-tag Name='webserver node'  --run-list 'recipe[apache]' -y --sudo  "
+                   sh " knife ec2 server create -c $CHEFREPO/chef-repo/.chef/config.rb --groups=default   --aws-secret-access-key=$AWS_SECRET_ACCESS_KEY --aws-access-key-id=$AWS_ACCESS_KEY_ID --region=us-east-1   --ssh-identity-file $AGENT_SSHKEY --image=ami-013f17f36f8b1fefb --flavor=t2.micro -N zxczxczxc --ssh-user ubuntu  --ssh-key jenkins-aws-key --aws-tag Name='webserver node'  --run-list 'recipe[apache]' -y --sudo  "
                   sh "knife ssh 'name:zxczxczxc' -x ubuntu -i $AGENT_SSHKEY 'sudo chef-client -z -o apache ' -c $CHEFREPO/chef-repo/.chef/config.rb"    
                 }
               }
