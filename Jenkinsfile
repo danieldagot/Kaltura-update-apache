@@ -7,8 +7,12 @@ pipeline {
   }
   stages {
     stage('Deploy Infra and Launch Instance') {
+      when {
+        environment name: 'env', value: 'production'
+      }
       environment {
         AWS_DEFAULT_REGION = "${params.AWS_DEFAULT_REGION}"
+        name = "production"
       }
       steps {
         withCredentials(bindings: [aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'awsCredentialId', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
