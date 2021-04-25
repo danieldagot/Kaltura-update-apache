@@ -1,41 +1,68 @@
-
-pipeline {
-    agent { label "chef"}
+pipeline{
+    agent any
     parameters{
+        choice(name:'ENVTYPE',choices:['Nginx','NodeJS'],description:'Type of Environment to launch like Nginx, tomcat etc. This will be used for bootstrapping')
         choice(name:'AWS_DEFAULT_REGION',choices:['us-east-1','us-east-2'],description:'Type of Environment to launch like Nginx, tomcat etc. This will be used for bootstrapping')
-        string defaultValue: 'daniel-dagot', description: '', name: 'username', trim: true
-        
+
     }
-    stages {
-           stage('Update Ubuntu') {
-            steps {
-                sh 'sudo apt-get update'
-            }    
+    environment{
+        env="production"
+    }
+    
+    stages{
+        stage('Deploy Infra and Launch Instance'){
+            withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'awsCredentialId', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+            when{
+                environment name: 'env', value: 'production'
+            }
+            environment{
+                AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID"
+                AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}"
+                AWS_DEFAULT_REGION="${params.AWS_DEFAULT_REGION}"
+            }
+            steps{
+                script {
+                    
+                    env.STACKID = sh(label:'',script:"aws cloudformation create-stack --stack-name myteststack3 --template-body file://deploy_ec2_network_v1.json --parameters ParameterKey=KeyP,ParameterValue=kaltura-ec2-keys ParameterKey=InstanceType,ParameterValue=t2.micro --query StackId",returnStdout: true).trim()
+                    env.STACKSTATUS=sh(label:'',script:"aws cloudformation describe-stacks --stack-name ${env.STACKID} --query Stacks[0].StackStatus",returnStdout: true).trim()
+                        while("${env.STACKSTATUS}"=='"CREATE_IN_PROGRESS"'){
+                            sleep(20)
+                            env.STACKSTATUS=sh(label:'',script:"aws cloudformation describe-stacks --stack-name ${env.STACKID} --query Stacks[0].StackStatus",returnStdout: true).trim()
+                        }
+                        env.INSTIP=sh(label:'',script:"aws cloudformation describe-stacks --stack-name ${env.STACKID} --query Stacks[0].Outputs[2].OutputValue",returnStdout: true).trim()
+                    }
+                
+            }
+            }
         }
-           stage('Download Cookbook') {
-            steps {
-                    git branch: 'main', credentialsId: 'git-creds', url: 'https://github.com/danieldagot/apache-ciickebook.git'            }
-        }
-   stage('Upload Cookbook to Chef Server, Converge Nodes') {
-            steps {
-                withCredentials([zip(credentialsId: 'chef-server-cred', variable: 'CHEFREPO')]) {
-                    sh 'mkdir -p $CHEFREPO/chef-repo/cookbooks/apache'
-                    sh 'sudo rm -rf $WORKSPACE/Berksfile.lock'
-                    sh 'mv $WORKSPACE/* $CHEFREPO/chef-repo/cookbooks/apache'
-                    // add trusted certs to remote repo 
-                    sh"cp -r ~/chef-repo/.chef/trusted_certs $CHEFREPO/chef-repo/"
-                    sh "knife ssl fetch -c $CHEFREPO/chef-repo/.chef/config.rb "
-                    //update cookbook
-                    sh "knife cookbook upload apache --force -o $CHEFREPO/chef-repo/cookbooks -c $CHEFREPO/chef-repo/.chef/config.rb"
-                    withCredentials([sshUserPrivateKey(credentialsId: 'ubuntu', keyFileVariable: 'AGENT_SSHKEY', passphraseVariable: '', usernameVariable: '')]) {
-                        // chenge username attebute 
-                        sh """knife exec -c $CHEFREPO/chef-repo/.chef/config.rb -E "nodes.find(:name => \'webserver\') { |node|   node.normal_attrs[:username]=\'${params.username}\' ; node.save; }" """
-                        //update nodes 
-                        sh "knife ssh 'name:webserver' -x ubuntu -i $AGENT_SSHKEY 'sudo chef-client' -c $CHEFREPO/chef-repo/.chef/config.rb"      
+        stage('Bootstrap'){
+            steps{
+                
+                sh "mkdir ${env.WORKSPACE}/supporting_files/devopsprojectchef/.chef"
+                sh "aws s3 cp s3://kaltura-ec2-keys ${env.WORKSPACE}/supporting_files/devopsprojectchef/.chef --recursive"
+                script{
+                    env.ENVTYPE = "Nginx"
+                    if("${env.ENVTYPE}"=='Nginx'){
+                        sh (label: '', script: "cd ${env.WORKSPACE}/supporting_files/devopsprojectchef;knife role from file roles/nginxserver.json;cd cookbooks/prepare_env;berks install;berks upload")
+                        sh (label: '', script: "cd ${env.WORKSPACE}/supporting_files/devopsprojectchef;knife bootstrap ${env.INSTIP} --ssh-user ubuntu --sudo --yes --ssh-identity-file '${env.WORKSPACE}/supporting_files/devopsprojectchef/.chef/${env.EC2KEY}.pem' --node-name MyNode1 --run-list 'role[nginxserver]' ")
                     }
                 }
-
             }
         }
+        stage('Record Instance IP/DNS'){
+            steps{
+                sh "echo ${env.INSTIP}>InstanceDNS.txt"
+                archiveArtifacts 'InstanceDNS.txt'
             }
         }
+    }
+    post{
+        success{
+            cleanWs disableDeferredWipeout: true, deleteDirs: true
+        }
+        failure{
+            sh "aws cloudformation delete-stack --stack-name ${env.STACKID}"
+            cleanWs disableDeferredWipeout: true, deleteDirs: true
+        }
+    }
+}
