@@ -50,7 +50,7 @@ pipeline {
                                 {
                                     echo "ok 0 "
                                    
-                                    sh " knife ec2 server create -c $CHEFREPO/chef-repo/.chef/config.rb --groups=default   --aws-secret-access-key=$AWS_SECRET_ACCESS_KEY --aws-access-key-id=$AWS_ACCESS_KEY_ID --region=us-east-1  --image=ami-013f17f36f8b1fefb --flavor=t2.micro  --ssh-user ubuntu -S --ssh-key=jenkins-aws-key -i=$AGENT_SSHKEY --aws-tag Name='webserver node'  -r 'role[apache]' "
+                                    sh " knife ec2 server create -c $CHEFREPO/chef-repo/.chef/config.rb --groups=default   --aws-secret-access-key=$AWS_SECRET_ACCESS_KEY --aws-access-key-id=$AWS_ACCESS_KEY_ID --region=us-east-1  --image=ami-013f17f36f8b1fefb --flavor=t2.micro  --ssh-user ubuntu -S  -i=$AGENT_SSHKEY --aws-tag Name='webserver node'  -r 'role[apache]' "
                                     // sh "knife bootstrap  -c $CHEFREPO/chef-repo/.chef/config.rb 18.206.192.87 --sudo -x ubuntu -i $AGENT_SSHKEY -N webservertest -y  "
                                 }
                                  
