@@ -45,7 +45,7 @@ pipeline {
               env.name = "$AWS_DEFAULT_REGION-webserver"
               script {
                 
-                env.countInstenses= sh (returnStdout: true, script:"""knife count -c $CHEFREPO/chef-repo/.chef/config.rb name:$env.name""").trim()
+                env.countInstenses= sh (returnStdout: true, script:"""knife count -c $CHEFREPO/chef-repo/.chef/config.rb tag:$AWS_DEFAULT_REGION""").trim()
                 env.amiID = 'ami-013f17f36f8b1fefb'
                 
                 if ($params.AWS_DEFAULT_REGION == 'us-east-2'){
@@ -54,11 +54,11 @@ pipeline {
                 }
                 if("$env.countInstenses" == '0')
                 {
-                  sh "knife ec2 server create -c $CHEFREPO/chef-repo/.chef/config.rb --groups=default   --aws-secret-access-key=$AWS_SECRET_ACCESS_KEY --aws-access-key-id=$AWS_ACCESS_KEY_ID --region=us-east-1   --ssh-identity-file $AGENT_SSHKEY --image=ami-013f17f36f8b1fefb --flavor=t2.micro -N '' --ssh-user ubuntu  --ssh-key jenkins-aws-key --aws-tag Name='webserver node'  -y --sudo  "
-                  sh "knife node run_list add $env.IName 'recipe[apache::default]' -c $CHEFREPO/chef-repo/.chef/config.rb "
+                  sh "knife ec2 server create -c $CHEFREPO/chef-repo/.chef/config.rb --groups=default   --aws-secret-access-key=$AWS_SECRET_ACCESS_KEY --aws-access-key-id=$AWS_ACCESS_KEY_ID --region=us-east-1   --ssh-identity-file $AGENT_SSHKEY --image=ami-013f17f36f8b1fefb --flavor=t2.micro -N $AWS_DEFAULT_REGION --ssh-user ubuntu  --ssh-key jenkins-aws-key --chef-tag $AWS_DEFAULT_REGION --aws-tag Name='webserver node'  -y --sudo  "
+                  sh "knife node run_list add $AWS_DEFAULT_REGION'recipe[apache::default]' -c $CHEFREPO/chef-repo/.chef/config.rb "
                 }
-                sh """knife exec -c $CHEFREPO/chef-repo/.chef/config.rb -E "nodes.find(:name => $env.IName) { |node|   node.normal_attrs[:username]=\'${params.username}\' ; node.save; }" """  
-                sh "knife ssh 'name:''' -x ubuntu -i $AGENT_SSHKEY 'sudo chef-client' -c $CHEFREPO/chef-repo/.chef/config.rb"    
+                sh """knife exec -c $CHEFREPO/chef-repo/.chef/config.rb -E "nodes.find(:tag => $AWS_DEFAULT_REGION) { |node|   node.normal_attrs[:username]=\'${params.username}\' ; node.save; }" """  
+                sh "knife ssh 'tag:$AWS_DEFAULT_REGION -x ubuntu -i $AGENT_SSHKEY 'sudo chef-client' -c $CHEFREPO/chef-repo/.chef/config.rb"    
               }
 
             }
