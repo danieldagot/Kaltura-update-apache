@@ -49,6 +49,10 @@ pipeline {
                                 {
                                     echo "ok2"
                                 }
+                                 if("$env.count1" != '0')
+                                {
+                                    echo "ok3"
+                                }
                         }
                            
                     }
