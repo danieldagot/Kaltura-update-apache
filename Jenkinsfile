@@ -23,10 +23,10 @@ pipeline{
             }
             steps{
                   withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'awsCredentialId', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                      env.AWS_ACCESS_KEY_ID = $AWS_ACCESS_KEY_ID
-                      env.AWS_SECRET_ACCESS_KEY = $AWS_SECRET_ACCESS_KEY 
+                      
                 script {
-                    
+                    env.AWS_ACCESS_KEY_ID = $AWS_ACCESS_KEY_ID
+                    env.AWS_SECRET_ACCESS_KEY = $AWS_SECRET_ACCESS_KEY 
                     env.STACKID = sh(label:'',script:"aws cloudformation create-stack --stack-name myteststack3 --template-body file://deploy_ec2_network_v1.json --parameters ParameterKey=KeyP,ParameterValue=kaltura-ec2-keys ParameterKey=InstanceType,ParameterValue=t2.micro --query StackId",returnStdout: true).trim()
                     env.STACKSTATUS=sh(label:'',script:"aws cloudformation describe-stacks --stack-name ${env.STACKID} --query Stacks[0].StackStatus",returnStdout: true).trim()
                         while("${env.STACKSTATUS}"=='"CREATE_IN_PROGRESS"'){
