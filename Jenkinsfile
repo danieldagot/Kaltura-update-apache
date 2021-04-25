@@ -33,6 +33,7 @@ pipeline {
                     sh 'mv $WORKSPACE/* $CHEFREPO/chef-repo/cookbooks/apache'
                     // add trusted certs to remote repo 
                     sh "knife ssl fetch -c $CHEFREPO/chef-repo/.chef/config.rb "
+                    sh "cat $CHEFREPO/chef-repo/.chef/config.rb"
                     sh"cp -r ~/chef-repo/.chef/trusted_certs $CHEFREPO/chef-repo/"
                      sh"cp -r ~/chef-repo/.chef/syntaxcache $CHEFREPO/chef-repo/"
                     sh "knife ssl fetch -c $CHEFREPO/chef-repo/.chef/config.rb "
