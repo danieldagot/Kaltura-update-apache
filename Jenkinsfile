@@ -35,7 +35,7 @@ pipeline {
                     
                      sh"cp -r ~/chef-repo/.chef/syntaxcache $CHEFREPO/chef-repo/"
                     sh "knife ssl fetch -c $CHEFREPO/chef-repo/.chef/config.rb "
-                    sh"cp  $CHEFREPO/chef-repo/.chef/trusted_certs -r ~/chef-repo/.chef/trusted_certs"
+                    sh"cp  $CHEFREPO/chef-repo/.chef/trusted_certs -r ~/chef-repo/.chef/"
                     //update cookbook
                     sh "knife cookbook upload apache --force -o $CHEFREPO/chef-repo/cookbooks -c $CHEFREPO/chef-repo/.chef/config.rb"
                     withCredentials([sshUserPrivateKey(credentialsId: 'ubuntu', keyFileVariable: 'AGENT_SSHKEY', passphraseVariable: '', usernameVariable: '')]) {
