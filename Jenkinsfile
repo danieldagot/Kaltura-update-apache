@@ -20,7 +20,7 @@ pipeline {
                 sh 'sudo apt-get install -y rubygems ruby-dev'
                 // sh 'chef gem install kitchen-docker'
                 sh 'chef gem install knife-count'
-                 sh "mv /etc/chef /etc/chef.old"
+                 sh "knife client delete --delete-validators ip-172-31-71-132.ec2.internal"
                 sh'sudo apt-get install gcc g++ make autoconf -y'
                 
             }
