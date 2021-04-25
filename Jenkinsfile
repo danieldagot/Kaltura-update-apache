@@ -2,6 +2,11 @@ pipeline {
   agent {
     label 'chef'
   }
+      parameters{
+        choice(name:'AWS_DEFAULT_REGION',choices:['us-east-1','us-east-2'],description:'Type of Environment to launch like Nginx, tomcat etc. This will be used for bootstrapping')
+        string defaultValue: 'daniel-dagot', description: '', name: 'username', trim: true
+        
+    }
   stages {
     stage('Update Ubuntu') {
       steps {
@@ -38,16 +43,15 @@ pipeline {
           withCredentials(bindings: [sshUserPrivateKey(credentialsId: 'ubuntu', keyFileVariable: 'AGENT_SSHKEY', passphraseVariable: '', usernameVariable: '')]) {
             withCredentials(bindings: [aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'awsCredentialId', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
               script {
-                env.countInstenses= sh (returnStdout: true, script:"knife count -c $CHEFREPO/chef-repo/.chef/config.rb tags:$AWS_DEFAULT_REGION").trim()
-
-
+                env.countInstenses= sh (returnStdout: true, script:"knife count -c $CHEFREPO/chef-repo/.chef/config.rb name:'$AWS_DEFAULT_REGION webserver' ").trim()
                 if("$env.countInstenses" == '0')
                 {
-                  echo "ok 0 "
-                  sh " knife ec2 server create -c $CHEFREPO/chef-repo/.chef/config.rb --groups=default   --aws-secret-access-key=$AWS_SECRET_ACCESS_KEY --aws-access-key-id=$AWS_ACCESS_KEY_ID --region=us-east-1   --ssh-identity-file $AGENT_SSHKEY --image=ami-013f17f36f8b1fefb --flavor=t2.micro -N a2 --ssh-user ubuntu  --ssh-key jenkins-aws-key --aws-tag Name='webserver node'  -y --sudo  "
-                  sh "knife node run_list add a2 'recipe[apache::default]' -c $CHEFREPO/chef-repo/.chef/config.rb "
-                   sh "knife ssh 'name:a2' -x ubuntu -i $AGENT_SSHKEY 'sudo chef-client' -c $CHEFREPO/chef-repo/.chef/config.rb"    
+                  sh " knife ec2 server create -c $CHEFREPO/chef-repo/.chef/config.rb --groups=default   --aws-secret-access-key=$AWS_SECRET_ACCESS_KEY --aws-access-key-id=$AWS_ACCESS_KEY_ID --region=us-east-1   --ssh-identity-file $AGENT_SSHKEY --image=ami-013f17f36f8b1fefb --flavor=t2.micro -N '' --ssh-user ubuntu  --ssh-key jenkins-aws-key --aws-tag Name='webserver node'  -y --sudo  "
+                  sh "knife node run_list add '$AWS_DEFAULT_REGION webserver' 'recipe[apache::default]' -c $CHEFREPO/chef-repo/.chef/config.rb "
                 }
+                sh """knife exec -c $CHEFREPO/chef-repo/.chef/config.rb -E "nodes.find(:name => \'${AWS_DEFAULT_REGION} webserver\') { |node|   node.normal_attrs[:username]=\'${params.username}\' ; node.save; }" """  
+                sh "knife ssh 'name:'$AWS_DEFAULT_REGION webserver'' -x ubuntu -i $AGENT_SSHKEY 'sudo chef-client' -c $CHEFREPO/chef-repo/.chef/config.rb"    
+
               }
 
             }
