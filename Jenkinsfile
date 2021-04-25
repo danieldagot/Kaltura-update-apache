@@ -37,7 +37,7 @@ pipeline {
                     sh "knife ssl fetch -c $CHEFREPO/chef-repo/.chef/config.rb "
                     //update cookbook
                     sh "knife cookbook upload apache --force -o $CHEFREPO/chef-repo/cookbooks -c $CHEFREPO/chef-repo/.chef/config.rb"
-                    withCredentials([sshUserPrivateKey(credentialsId: 'ubuntu', keyFileVariable: 'AGENT_SSHKEY', passphraseVariable: '', usernameVariable: '')]) {
+                    withCredentials([sshUserPrivateKey(credentialsId: 'Danielssh', keyFileVariable: 'AGENT_SSHKEY', passphraseVariable: '', usernameVariable: '')]) {
                         withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'awsCredentialId', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                         script{
                                   env.countInstenses= sh (returnStdout: true, script:"knife count -c $CHEFREPO/chef-repo/.chef/config.rb tags:$AWS_DEFAULT_REGION").trim()
