@@ -46,8 +46,7 @@ pipeline {
                   echo "ok 0 "
                   //  sh " knife ec2 server create -c $CHEFREPO/chef-repo/.chef/config.rb --groups=default   --aws-secret-access-key=$AWS_SECRET_ACCESS_KEY --aws-access-key-id=$AWS_ACCESS_KEY_ID --region=us-east-1   --ssh-identity-file $AGENT_SSHKEY --image=ami-013f17f36f8b1fefb --flavor=t2.micro -N a1 --ssh-user ubuntu  --ssh-key jenkins-aws-key --aws-tag Name='webserver node'  -y --sudo  "
                   sh "knife node run_list add a1 'recipe[apache::default]' -c $CHEFREPO/chef-repo/.chef/config.rb "
-                  sh "knife ssh 'name:a1' -x ubuntu -i $AGENT_SSHKEY 'sudo chef-client -c $CHEFREPO/chef-repo/.chef/config.rb"    
-                  
+                   sh "knife ssh 'name:a1' -x ubuntu -i $AGENT_SSHKEY 'sudo chef-client' -c $CHEFREPO/chef-repo/.chef/config.rb"    
                 }
               }
 
