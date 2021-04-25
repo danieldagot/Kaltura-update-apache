@@ -1,5 +1,5 @@
 pipeline{
-    agent any
+    agent { label "chef"}
     parameters{
         choice(name:'ENVTYPE',choices:['Nginx','NodeJS'],description:'Type of Environment to launch like Nginx, tomcat etc. This will be used for bootstrapping')
         choice(name:'AWS_DEFAULT_REGION',choices:['us-east-1','us-east-2'],description:'Type of Environment to launch like Nginx, tomcat etc. This will be used for bootstrapping')
