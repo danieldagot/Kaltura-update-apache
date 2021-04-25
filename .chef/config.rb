@@ -5,5 +5,5 @@ log_level                :info
 log_location             STDOUT
 node_name                "master1"
 client_key               "#{current_dir}/master1.pem"
-chef_server_url          "https://ip-172-31-71-132.ec2.internal/organizations/dagotltd"
+chef_server_url          "https://3.236.103.139/organizations/dagotltd"
 cookbook_path            ["#{current_dir}/../cookbooks"]
