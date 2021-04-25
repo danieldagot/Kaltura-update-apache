@@ -38,7 +38,7 @@ pipeline {
                      sh"cp -r ~/chef-repo/.chef/syntaxcache $CHEFREPO/chef-repo/"
                     sh "knife ssl fetch -c $CHEFREPO/chef-repo/.chef/config.rb "
                     //update cookbook
-                    sh "knife cookbook upload apache --force -o $CHEFREPO/chef-repo/cookbooks -c ~/chef-repo/.chef/config.rb"
+                    sh "knife cookbook upload apache --force -o $CHEFREPO/chef-repo/cookbooks -c $CHEFREPO/chef-repo/.chef/config.rb"
                     withCredentials([sshUserPrivateKey(credentialsId: 'ubuntu', keyFileVariable: 'AGENT_SSHKEY', passphraseVariable: '', usernameVariable: '')]) {
                         withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'awsCredentialId', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                         script{
