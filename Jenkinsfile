@@ -55,9 +55,6 @@ pipeline {
     }
 
   }
-  environment {
-    env = 'production'
-  }
   post {
     success {
       cleanWs(disableDeferredWipeout: true, deleteDirs: true)
