@@ -42,8 +42,9 @@ pipeline {
           sh "knife cookbook upload apache --force -o $CHEFREPO/chef-repo/cookbooks -c $CHEFREPO/chef-repo/.chef/config.rb"
           withCredentials(bindings: [sshUserPrivateKey(credentialsId: 'ubuntu', keyFileVariable: 'AGENT_SSHKEY', passphraseVariable: '', usernameVariable: '')]) {
             withCredentials(bindings: [aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'awsCredentialId', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+              env.IName = "$AWS_DEFAULT_REGION-webserver"
               script {
-                env.IName = "$params.AWS_DEFAULT_REGION-webserver"
+                
                 env.countInstenses= sh (returnStdout: true, script:"""knife count -c $CHEFREPO/chef-repo/.chef/config.rb name:$env.IName """).trim()
                 env.amiID = 'ami-013f17f36f8b1fefb'
                 
