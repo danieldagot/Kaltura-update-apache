@@ -20,7 +20,7 @@ pipeline {
                 sh 'sudo apt-get install -y rubygems ruby-dev'
                 // sh 'chef gem install kitchen-docker'
                 sh 'chef gem install knife-count'
-                sh'sudo apt-get install gcc g++ make autoconf'
+                sh'sudo apt-get install gcc g++ make autoconf -y'
                 
             }
         }
