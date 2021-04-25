@@ -11,10 +11,11 @@ pipeline{
     
     stages{
         stage('Deploy Infra and Launch Instance'){
-            withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'awsCredentialId', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+            
             when{
                 environment name: 'env', value: 'production'
             }
+            withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'awsCredentialId', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
             environment{
                 AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID"
                 AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}"
@@ -34,6 +35,7 @@ pipeline{
                 
             }
             }
+            
         }
         stage('Bootstrap'){
             steps{
