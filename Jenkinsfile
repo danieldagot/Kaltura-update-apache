@@ -15,13 +15,16 @@ pipeline{
             when{
                 environment name: 'env', value: 'production'
             }
-            withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'awsCredentialId', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+          
             environment{
                 AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID"
                 AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}"
                 AWS_DEFAULT_REGION="${params.AWS_DEFAULT_REGION}"
             }
             steps{
+                  withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'awsCredentialId', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                      env.AWS_ACCESS_KEY_ID = $AWS_ACCESS_KEY_ID
+                      env.AWS_SECRET_ACCESS_KEY = $AWS_SECRET_ACCESS_KEY 
                 script {
                     
                     env.STACKID = sh(label:'',script:"aws cloudformation create-stack --stack-name myteststack3 --template-body file://deploy_ec2_network_v1.json --parameters ParameterKey=KeyP,ParameterValue=kaltura-ec2-keys ParameterKey=InstanceType,ParameterValue=t2.micro --query StackId",returnStdout: true).trim()
