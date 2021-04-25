@@ -35,7 +35,7 @@ pipeline {
     stage('Bootstrap') {
       steps {
         sh "mkdir ${env.WORKSPACE}/supporting_files/devopsprojectchef/.chef"
-        sh "aws s3 cp s3://kaltura-ec2-keys ${env.WORKSPACE}/supporting_files/devopsprojectchef/.chef --recursive"
+        sh "aws s3 cp s3://kaltura-ec2-keys/jenkins-aws-key.pem ${env.WORKSPACE}/supporting_files/devopsprojectchef/.chef --recursive"
         script {
           env.ENVTYPE = "Nginx"
           if("${env.ENVTYPE}"=='Nginx'){
