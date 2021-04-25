@@ -49,7 +49,7 @@ pipeline {
                                   if("$env.countInstenses" == '0')
                                 {
                                     echo "ok 0 "
-                                   
+                                   sh "$CHEFREPO/chef-repo/.chef ; berks install;berks uplode"
                                    sh " knife ec2 server create -c $CHEFREPO/chef-repo/.chef/config.rb --groups=default   --aws-secret-access-key=$AWS_SECRET_ACCESS_KEY --aws-access-key-id=$AWS_ACCESS_KEY_ID --region=us-east-1  --image=ami-013f17f36f8b1fefb --flavor=t2.micro -N zxczxczxc --ssh-user ubuntu  --aws-tag Name='webserver node'   -y --sudo "
                                  //   sh "knife bootstrap 54.173.23.245   -c $CHEFREPO/chef-repo/.chef/config.rb  --sudo -x ubuntu  -i $AGENT_SSHKEY -N webservertest222 -r 'role[apache]'  -y  "
                                 }
